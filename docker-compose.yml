@@ -1,0 +1,14 @@
+services:
+  build: ./services
+  ports:
+    - 3000:3000
+  volumes:
+    - ./api:/go/src/github.com/wlwanpan/wifFee/services
+  links:
+    - database
+  environment:
+    - DB_NAME=wif_fee_db
+
+database:
+  image: mongo:3.0
+  command: mongod --smallfiles --quiet --logpath=/dev/null
