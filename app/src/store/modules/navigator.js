@@ -1,7 +1,10 @@
+import { gmapApi } from 'vue2-google-maps'
+import services from '../../services'
 
 export default {
   namespaced: true,
   state: {
+    map: null,
     currentCoords: {
       lat: 49.281209,
       lng: -123.118336
@@ -9,7 +12,7 @@ export default {
     mapType: 'roadmap',
     zoom: 15,
     markers: [],
-    places: []
+    places: {}
   },
   getters: {
     getCurrentCoords(state) {
@@ -20,10 +23,36 @@ export default {
     },
     getPlaces(state) {
       return state.places
+    },
+    getMapType(state) {
+      return state.mapType
+    },
+    getZoom(state) {
+      return state.zoom
     }
   },
   actions: {
-    updateCurrentCoords({commit}) {
+    setMapInstance({ commit }, gmapInstance) {
+      /**
+       * Store google Map obj and initialize/store google service obj
+       * @param {google.maps.Map}
+       */
+      commit('setMapInstance', gmapInstance)
+    },
+    async updateCoffeeShopMarkers({ commit, state }) {
+      /**
+       * Call Services search query
+       */
+      let {lat, lng} = state.currentCoords
+      let res = await services().get('places/' + [lat, lng].join(','))
+      if (res.statusText === 'OK') {
+        commit('setPlaces', res.data.places)
+      }
+    },
+    updateCurrentCoords({ commit }) {
+      /**
+       * Locate current posn using window.navigator and returns a promise{true} if successful
+       */
       return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(posn => {
           if (posn) {
@@ -38,8 +67,20 @@ export default {
     }
   },
   mutations: {
+    setMapInstance(state, gmapInstance) {
+      state.map = gmapInstance
+    },
+    setPlaces(state, places) {
+      let indexedPlaces = {}
+      places.forEach((place) => {
+        let place_id = place.place_id
+        delete place.place_id
+        indexedPlaces[place_id] = place
+      })
+      console.log(indexedPlaces)
+      state.places = indexedPlaces
+    },
     setCurrentCoords(state, coords) {
-      console.log(coords)
       state.currentCoords = {
         lat: coords.latitude,
         lng: coords.longitude

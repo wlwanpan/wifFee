@@ -4,7 +4,6 @@ dist/
 npm-debug.log
 yarn-error.log
 package-lock.json
-.env
 
 # Editor directories and files
 .idea
@@ -12,3 +11,6 @@ package-lock.json
 *.ntvs*
 *.njsproj
 *.sln
+
+# Environment variables
+.env

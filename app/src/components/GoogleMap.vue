@@ -1,7 +1,7 @@
 <template>
   <div id='google-map'>
     <GmapMap
-      ref='gMap'
+      ref='gMapRef'
       :center='center'
       :zoom='zoom'
       :map-type-id='mapType'
@@ -25,25 +25,29 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'google-map',
-  data() {
-    return {
-      zoom: 15,
-      mapType: 'roadmap'
-    }
-  },
   computed: {
     ...mapGetters({
       center: 'navigator/getCurrentCoords',
       markers: 'navigator/getMarkers',
-      places: 'navigator/getPlaces'
+      places: 'navigator/getPlaces',
+      mapType: 'navigator/getMapType',
+      zoom: 'navigator/getZoom'
     })
   },
   async mounted() {
     try {
-      await this.$store.dispatch('navigator/updateCurrentCoords')
+      let map = await this.$refs.gMapRef.$mapPromise
+      this.$store.dispatch('navigator/setMapInstance', map)
+      await this.initMapSetup()
     }
     catch (err) {
       window.alert(err)
+    }
+  },
+  methods: {
+    async initMapSetup() {
+      await this.$store.dispatch('navigator/updateCurrentCoords')
+      await this.$store.dispatch('navigator/updateCoffeeShopMarkers')
     }
   }
 }
