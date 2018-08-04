@@ -6,8 +6,8 @@ import (
 	"github.com/wlwanpan/wifFee/services/middlewares"
 )
 
-func SetPlacesRoutes(router *mux.Router) *mux.Router {
+func SetPlacesRoutes(r *mux.Router, c middlewares.Handler) *mux.Router {
 
-	router.HandleFunc("/places/{latlng}", middlewares.LogRequest(handlers.GetCoffeeShops)).Methods("GET")
-	return router
+	r.HandleFunc("/places/{latlng}", c(handlers.GetCoffeeShops)).Methods("GET")
+	return r
 }

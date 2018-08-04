@@ -48,6 +48,9 @@ export default {
       if (res.statusText === 'OK') {
         commit('setPlaces', res.data.places)
       }
+      else {
+        console.log(res)
+      }
     },
     updateCurrentCoords({ commit }) {
       /**
