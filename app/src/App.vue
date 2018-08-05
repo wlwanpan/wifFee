@@ -5,16 +5,8 @@
 </template>
 
 <script>
-import GoogleMap from './components/GoogleMap'
-
 export default {
-  name: 'app',
-  data () {
-    return {}
-  },
-  components: {
-    GoogleMap
-  }
+  name: 'app'
 }
 </script>
 

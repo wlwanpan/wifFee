@@ -2,17 +2,15 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"net/http"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/wlwanpan/wifFee/services/gmap"
+	"github.com/wlwanpan/wifFee/services/pb"
 	"googlemaps.github.io/maps"
 )
-
-type PlacesResponse struct {
-	Places []maps.PlacesSearchResult `json:"places"`
-}
 
 func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 	params := mux.Vars(r)
@@ -30,15 +28,38 @@ func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 		return http.StatusInternalServerError, err
 	}
 
-	// -> Change to protobuf
-	placesJson, err := json.Marshal(PlacesResponse{Places: resp.Results})
+	places := []*pb.PlacePb{}
+	for _, place := range resp.Results {
+		places = append(places, mapsPlaceToPb(place))
+	}
+
+	placesPb := &pb.PlacesPb{
+		Places: places,
+	}
+	encodedPlacesPb, err := proto.Marshal(placesPb)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(placesJson)
+	w.Write(encodedPlacesPb)
 
 	return http.StatusOK, nil
+}
+
+func GetCoffeeShop(w http.ResponseWriter, r *http.Request) (int, error) {
+	return http.StatusNoContent, errors.New("Not implemented yet...")
+}
+
+func mapsPlaceToPb(p maps.PlacesSearchResult) *pb.PlacePb {
+	return &pb.PlacePb{
+		ID:      p.ID,
+		PlaceID: p.PlaceID,
+		Name:    p.Name,
+		Address: &pb.PlaceAddress{
+			Lat:          p.Geometry.Location.Lat,
+			Lng:          p.Geometry.Location.Lng,
+			LocationType: p.Geometry.LocationType,
+		},
+	}
 }

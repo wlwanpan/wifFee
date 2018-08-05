@@ -28,7 +28,7 @@ func ParseLocation(location string) *maps.LatLng {
 	return &l
 }
 
-//
+// Return google map client < to move to middleware
 func MapClient() *maps.Client {
 
 	mapsApiKey := mapsApiKey()

@@ -1,4 +1,5 @@
 import { gmapApi } from 'vue2-google-maps'
+import pbParser from '../../pb/parser'
 import services from '../../services'
 
 export default {
@@ -44,17 +45,19 @@ export default {
        * Call Services search query
        */
       let {lat, lng} = state.currentCoords
-      let res = await services().get('places/' + [lat, lng].join(','))
-      if (res.statusText === 'OK') {
-        commit('setPlaces', res.data.places)
+      let resp = await services().get('places/' + [lat, lng].join(','))
+
+      if (resp.status === 200) {
+        commit('setPlaces', pbParser.placesToIndexedJson(resp.data))
       }
       else {
-        console.log(res)
+        console.log(resp)
       }
     },
     updateCurrentCoords({ commit }) {
       /**
        * Locate current posn using window.navigator and returns a promise{true} if successful
+       * @return {Promise(boolean)}
        */
       return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(posn => {
@@ -74,14 +77,7 @@ export default {
       state.map = gmapInstance
     },
     setPlaces(state, places) {
-      let indexedPlaces = {}
-      places.forEach((place) => {
-        let place_id = place.place_id
-        delete place.place_id
-        indexedPlaces[place_id] = place
-      })
-      console.log(indexedPlaces)
-      state.places = indexedPlaces
+      state.places = places
     },
     setCurrentCoords(state, coords) {
       state.currentCoords = {

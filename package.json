@@ -1,0 +1,20 @@
+{
+  "name": "wifFee",
+  "version": "1.0.0",
+  "description": "wifi + coffee = <3",
+  "scripts": {
+    "protoc": "protoc --proto_path=proto --js_out=import_style=commonjs,binary:app/src/pb proto/places.proto && protoc -I=proto --go_out=services/pb proto/places.proto",
+    "start": "cd app && npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wlwanpan/wifFee.git"
+  },
+  "author": "Warren Wan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wlwanpan/wifFee/issues"
+  },
+  "homepage": "https://github.com/wlwanpan/wifFee#readme"
+}

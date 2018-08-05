@@ -4,6 +4,7 @@ export default function() {
 
   let axiosConfig = {
     baseURL: 'http://localhost:3000/',
+    responseType: 'arraybuffer',
     withCredentials: false
   }
 
