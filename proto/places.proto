@@ -10,11 +10,35 @@ message PlacePb {
   string ID = 1;
   string PlaceID = 2;
   string Name = 3;
-  PlaceAddress Address = 4;
+  bool Open = 4;
+  PlaceAddress Address = 5;
+  PlaceWifi Wifi = 6;
+
+  // Optional Details
+  string FormattedAddress = 7;
+  string Website = 8;
+  repeated PlaceOpeningHours OpeningHours = 9;
+
 }
 
 message PlaceAddress {
   double Lat = 1;
   double Lng = 2;
   string LocationType = 3;
+}
+
+message PlaceWifi {
+  uint32 Rating = 1;
+  uint32 AvgUp = 2;
+  uint32 AvgDown = 3;
+}
+
+message PlaceOpeningHours {
+  bool OpenNow = 1;
+  repeated PlaceOpeningHoursPeriod Period = 2;
+}
+
+message PlaceOpeningHoursPeriod {
+  string Day = 1;
+  string Time = 2;
 }

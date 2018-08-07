@@ -5,7 +5,6 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/wlwanpan/wifFee/services/middlewares"
 	mgo "gopkg.in/mgo.v2"
 )
 
@@ -18,12 +17,10 @@ func SetCORS(r *mux.Router) http.Handler {
 	return handlers.CORS(allowedOrigins, allowedHeaders, allowedMethods)(r)
 }
 
-func InitRoutes(db *mgo.Session) *mux.Router {
+func Init(db *mgo.Session) *mux.Router {
 
 	router := mux.NewRouter()
-	logger := middlewares.ErrorLogging
-
-	router = SetPlacesRoutes(router, logger, db)
+	router = SetPlacesRoutes(router, db)
 
 	return router
 }

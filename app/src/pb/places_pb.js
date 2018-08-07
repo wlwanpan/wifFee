@@ -12,7 +12,10 @@ var goog = jspb;
 var global = Function('return this')();
 
 goog.exportSymbol('proto.pb.PlaceAddress', null, global);
+goog.exportSymbol('proto.pb.PlaceOpeningHours', null, global);
+goog.exportSymbol('proto.pb.PlaceOpeningHoursPeriod', null, global);
 goog.exportSymbol('proto.pb.PlacePb', null, global);
+goog.exportSymbol('proto.pb.PlaceWifi', null, global);
 goog.exportSymbol('proto.pb.PlacesPb', null, global);
 
 /**
@@ -194,12 +197,19 @@ proto.pb.PlacesPb.prototype.clearPlacesList = function() {
  * @constructor
  */
 proto.pb.PlacePb = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.pb.PlacePb.repeatedFields_, null);
 };
 goog.inherits(proto.pb.PlacePb, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
   proto.pb.PlacePb.displayName = 'proto.pb.PlacePb';
 }
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.pb.PlacePb.repeatedFields_ = [9];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -232,7 +242,13 @@ proto.pb.PlacePb.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     placeid: jspb.Message.getFieldWithDefault(msg, 2, ""),
     name: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    address: (f = msg.getAddress()) && proto.pb.PlaceAddress.toObject(includeInstance, f)
+    open: jspb.Message.getFieldWithDefault(msg, 4, false),
+    address: (f = msg.getAddress()) && proto.pb.PlaceAddress.toObject(includeInstance, f),
+    wifi: (f = msg.getWifi()) && proto.pb.PlaceWifi.toObject(includeInstance, f),
+    formattedaddress: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    website: jspb.Message.getFieldWithDefault(msg, 8, ""),
+    openinghoursList: jspb.Message.toObjectList(msg.getOpeninghoursList(),
+    proto.pb.PlaceOpeningHours.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -282,9 +298,31 @@ proto.pb.PlacePb.deserializeBinaryFromReader = function(msg, reader) {
       msg.setName(value);
       break;
     case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOpen(value);
+      break;
+    case 5:
       var value = new proto.pb.PlaceAddress;
       reader.readMessage(value,proto.pb.PlaceAddress.deserializeBinaryFromReader);
       msg.setAddress(value);
+      break;
+    case 6:
+      var value = new proto.pb.PlaceWifi;
+      reader.readMessage(value,proto.pb.PlaceWifi.deserializeBinaryFromReader);
+      msg.setWifi(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFormattedaddress(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setWebsite(value);
+      break;
+    case 9:
+      var value = new proto.pb.PlaceOpeningHours;
+      reader.readMessage(value,proto.pb.PlaceOpeningHours.deserializeBinaryFromReader);
+      msg.addOpeninghours(value);
       break;
     default:
       reader.skipField();
@@ -336,12 +374,49 @@ proto.pb.PlacePb.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
+  f = message.getOpen();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
+    );
+  }
   f = message.getAddress();
   if (f != null) {
     writer.writeMessage(
-      4,
+      5,
       f,
       proto.pb.PlaceAddress.serializeBinaryToWriter
+    );
+  }
+  f = message.getWifi();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      proto.pb.PlaceWifi.serializeBinaryToWriter
+    );
+  }
+  f = message.getFormattedaddress();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
+      f
+    );
+  }
+  f = message.getWebsite();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
+  }
+  f = message.getOpeninghoursList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      9,
+      f,
+      proto.pb.PlaceOpeningHours.serializeBinaryToWriter
     );
   }
 };
@@ -393,18 +468,35 @@ proto.pb.PlacePb.prototype.setName = function(value) {
 
 
 /**
- * optional PlaceAddress Address = 4;
+ * optional bool Open = 4;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.pb.PlacePb.prototype.getOpen = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 4, false));
+};
+
+
+/** @param {boolean} value */
+proto.pb.PlacePb.prototype.setOpen = function(value) {
+  jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+/**
+ * optional PlaceAddress Address = 5;
  * @return {?proto.pb.PlaceAddress}
  */
 proto.pb.PlacePb.prototype.getAddress = function() {
   return /** @type{?proto.pb.PlaceAddress} */ (
-    jspb.Message.getWrapperField(this, proto.pb.PlaceAddress, 4));
+    jspb.Message.getWrapperField(this, proto.pb.PlaceAddress, 5));
 };
 
 
 /** @param {?proto.pb.PlaceAddress|undefined} value */
 proto.pb.PlacePb.prototype.setAddress = function(value) {
-  jspb.Message.setWrapperField(this, 4, value);
+  jspb.Message.setWrapperField(this, 5, value);
 };
 
 
@@ -418,7 +510,98 @@ proto.pb.PlacePb.prototype.clearAddress = function() {
  * @return {!boolean}
  */
 proto.pb.PlacePb.prototype.hasAddress = function() {
-  return jspb.Message.getField(this, 4) != null;
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional PlaceWifi Wifi = 6;
+ * @return {?proto.pb.PlaceWifi}
+ */
+proto.pb.PlacePb.prototype.getWifi = function() {
+  return /** @type{?proto.pb.PlaceWifi} */ (
+    jspb.Message.getWrapperField(this, proto.pb.PlaceWifi, 6));
+};
+
+
+/** @param {?proto.pb.PlaceWifi|undefined} value */
+proto.pb.PlacePb.prototype.setWifi = function(value) {
+  jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+proto.pb.PlacePb.prototype.clearWifi = function() {
+  this.setWifi(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.pb.PlacePb.prototype.hasWifi = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional string FormattedAddress = 7;
+ * @return {string}
+ */
+proto.pb.PlacePb.prototype.getFormattedaddress = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/** @param {string} value */
+proto.pb.PlacePb.prototype.setFormattedaddress = function(value) {
+  jspb.Message.setProto3StringField(this, 7, value);
+};
+
+
+/**
+ * optional string Website = 8;
+ * @return {string}
+ */
+proto.pb.PlacePb.prototype.getWebsite = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/** @param {string} value */
+proto.pb.PlacePb.prototype.setWebsite = function(value) {
+  jspb.Message.setProto3StringField(this, 8, value);
+};
+
+
+/**
+ * repeated PlaceOpeningHours OpeningHours = 9;
+ * @return {!Array.<!proto.pb.PlaceOpeningHours>}
+ */
+proto.pb.PlacePb.prototype.getOpeninghoursList = function() {
+  return /** @type{!Array.<!proto.pb.PlaceOpeningHours>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.pb.PlaceOpeningHours, 9));
+};
+
+
+/** @param {!Array.<!proto.pb.PlaceOpeningHours>} value */
+proto.pb.PlacePb.prototype.setOpeninghoursList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 9, value);
+};
+
+
+/**
+ * @param {!proto.pb.PlaceOpeningHours=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.pb.PlaceOpeningHours}
+ */
+proto.pb.PlacePb.prototype.addOpeninghours = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 9, opt_value, proto.pb.PlaceOpeningHours, opt_index);
+};
+
+
+proto.pb.PlacePb.prototype.clearOpeninghoursList = function() {
+  this.setOpeninghoursList([]);
 };
 
 
@@ -615,6 +798,568 @@ proto.pb.PlaceAddress.prototype.getLocationtype = function() {
 /** @param {string} value */
 proto.pb.PlaceAddress.prototype.setLocationtype = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.pb.PlaceWifi = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.pb.PlaceWifi, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.pb.PlaceWifi.displayName = 'proto.pb.PlaceWifi';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.pb.PlaceWifi.prototype.toObject = function(opt_includeInstance) {
+  return proto.pb.PlaceWifi.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.pb.PlaceWifi} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.pb.PlaceWifi.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    rating: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    avgup: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    avgdown: jspb.Message.getFieldWithDefault(msg, 3, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.pb.PlaceWifi}
+ */
+proto.pb.PlaceWifi.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.pb.PlaceWifi;
+  return proto.pb.PlaceWifi.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.pb.PlaceWifi} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.pb.PlaceWifi}
+ */
+proto.pb.PlaceWifi.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setRating(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setAvgup(value);
+      break;
+    case 3:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setAvgdown(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.pb.PlaceWifi.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.pb.PlaceWifi.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.pb.PlaceWifi} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.pb.PlaceWifi.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getRating();
+  if (f !== 0) {
+    writer.writeUint32(
+      1,
+      f
+    );
+  }
+  f = message.getAvgup();
+  if (f !== 0) {
+    writer.writeUint32(
+      2,
+      f
+    );
+  }
+  f = message.getAvgdown();
+  if (f !== 0) {
+    writer.writeUint32(
+      3,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional uint32 Rating = 1;
+ * @return {number}
+ */
+proto.pb.PlaceWifi.prototype.getRating = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+};
+
+
+/** @param {number} value */
+proto.pb.PlaceWifi.prototype.setRating = function(value) {
+  jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional uint32 AvgUp = 2;
+ * @return {number}
+ */
+proto.pb.PlaceWifi.prototype.getAvgup = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.pb.PlaceWifi.prototype.setAvgup = function(value) {
+  jspb.Message.setProto3IntField(this, 2, value);
+};
+
+
+/**
+ * optional uint32 AvgDown = 3;
+ * @return {number}
+ */
+proto.pb.PlaceWifi.prototype.getAvgdown = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+};
+
+
+/** @param {number} value */
+proto.pb.PlaceWifi.prototype.setAvgdown = function(value) {
+  jspb.Message.setProto3IntField(this, 3, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.pb.PlaceOpeningHours = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.pb.PlaceOpeningHours.repeatedFields_, null);
+};
+goog.inherits(proto.pb.PlaceOpeningHours, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.pb.PlaceOpeningHours.displayName = 'proto.pb.PlaceOpeningHours';
+}
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.pb.PlaceOpeningHours.repeatedFields_ = [2];
+
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.pb.PlaceOpeningHours.prototype.toObject = function(opt_includeInstance) {
+  return proto.pb.PlaceOpeningHours.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.pb.PlaceOpeningHours} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.pb.PlaceOpeningHours.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    opennow: jspb.Message.getFieldWithDefault(msg, 1, false),
+    periodList: jspb.Message.toObjectList(msg.getPeriodList(),
+    proto.pb.PlaceOpeningHoursPeriod.toObject, includeInstance)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.pb.PlaceOpeningHours}
+ */
+proto.pb.PlaceOpeningHours.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.pb.PlaceOpeningHours;
+  return proto.pb.PlaceOpeningHours.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.pb.PlaceOpeningHours} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.pb.PlaceOpeningHours}
+ */
+proto.pb.PlaceOpeningHours.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOpennow(value);
+      break;
+    case 2:
+      var value = new proto.pb.PlaceOpeningHoursPeriod;
+      reader.readMessage(value,proto.pb.PlaceOpeningHoursPeriod.deserializeBinaryFromReader);
+      msg.addPeriod(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.pb.PlaceOpeningHours.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.pb.PlaceOpeningHours.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.pb.PlaceOpeningHours} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.pb.PlaceOpeningHours.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getOpennow();
+  if (f) {
+    writer.writeBool(
+      1,
+      f
+    );
+  }
+  f = message.getPeriodList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      2,
+      f,
+      proto.pb.PlaceOpeningHoursPeriod.serializeBinaryToWriter
+    );
+  }
+};
+
+
+/**
+ * optional bool OpenNow = 1;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.pb.PlaceOpeningHours.prototype.getOpennow = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 1, false));
+};
+
+
+/** @param {boolean} value */
+proto.pb.PlaceOpeningHours.prototype.setOpennow = function(value) {
+  jspb.Message.setProto3BooleanField(this, 1, value);
+};
+
+
+/**
+ * repeated PlaceOpeningHoursPeriod Period = 2;
+ * @return {!Array.<!proto.pb.PlaceOpeningHoursPeriod>}
+ */
+proto.pb.PlaceOpeningHours.prototype.getPeriodList = function() {
+  return /** @type{!Array.<!proto.pb.PlaceOpeningHoursPeriod>} */ (
+    jspb.Message.getRepeatedWrapperField(this, proto.pb.PlaceOpeningHoursPeriod, 2));
+};
+
+
+/** @param {!Array.<!proto.pb.PlaceOpeningHoursPeriod>} value */
+proto.pb.PlaceOpeningHours.prototype.setPeriodList = function(value) {
+  jspb.Message.setRepeatedWrapperField(this, 2, value);
+};
+
+
+/**
+ * @param {!proto.pb.PlaceOpeningHoursPeriod=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.pb.PlaceOpeningHoursPeriod}
+ */
+proto.pb.PlaceOpeningHours.prototype.addPeriod = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 2, opt_value, proto.pb.PlaceOpeningHoursPeriod, opt_index);
+};
+
+
+proto.pb.PlaceOpeningHours.prototype.clearPeriodList = function() {
+  this.setPeriodList([]);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.pb.PlaceOpeningHoursPeriod = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.pb.PlaceOpeningHoursPeriod, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.pb.PlaceOpeningHoursPeriod.displayName = 'proto.pb.PlaceOpeningHoursPeriod';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.pb.PlaceOpeningHoursPeriod.prototype.toObject = function(opt_includeInstance) {
+  return proto.pb.PlaceOpeningHoursPeriod.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.pb.PlaceOpeningHoursPeriod} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.pb.PlaceOpeningHoursPeriod.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    day: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    time: jspb.Message.getFieldWithDefault(msg, 2, "")
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.pb.PlaceOpeningHoursPeriod}
+ */
+proto.pb.PlaceOpeningHoursPeriod.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.pb.PlaceOpeningHoursPeriod;
+  return proto.pb.PlaceOpeningHoursPeriod.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.pb.PlaceOpeningHoursPeriod} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.pb.PlaceOpeningHoursPeriod}
+ */
+proto.pb.PlaceOpeningHoursPeriod.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDay(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTime(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.pb.PlaceOpeningHoursPeriod.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  proto.pb.PlaceOpeningHoursPeriod.serializeBinaryToWriter(this, writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.pb.PlaceOpeningHoursPeriod} message
+ * @param {!jspb.BinaryWriter} writer
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.pb.PlaceOpeningHoursPeriod.serializeBinaryToWriter = function(message, writer) {
+  var f = undefined;
+  f = message.getDay();
+  if (f.length > 0) {
+    writer.writeString(
+      1,
+      f
+    );
+  }
+  f = message.getTime();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional string Day = 1;
+ * @return {string}
+ */
+proto.pb.PlaceOpeningHoursPeriod.prototype.getDay = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+};
+
+
+/** @param {string} value */
+proto.pb.PlaceOpeningHoursPeriod.prototype.setDay = function(value) {
+  jspb.Message.setProto3StringField(this, 1, value);
+};
+
+
+/**
+ * optional string Time = 2;
+ * @return {string}
+ */
+proto.pb.PlaceOpeningHoursPeriod.prototype.getTime = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/** @param {string} value */
+proto.pb.PlaceOpeningHoursPeriod.prototype.setTime = function(value) {
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 

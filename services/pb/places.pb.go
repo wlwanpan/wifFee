@@ -29,7 +29,7 @@ func (m *PlacesPb) Reset()         { *m = PlacesPb{} }
 func (m *PlacesPb) String() string { return proto.CompactTextString(m) }
 func (*PlacesPb) ProtoMessage()    {}
 func (*PlacesPb) Descriptor() ([]byte, []int) {
-	return fileDescriptor_places_b8a0619dd5ec041e, []int{0}
+	return fileDescriptor_places_3ef661cf870547ee, []int{0}
 }
 func (m *PlacesPb) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlacesPb.Unmarshal(m, b)
@@ -57,20 +57,26 @@ func (m *PlacesPb) GetPlaces() []*PlacePb {
 }
 
 type PlacePb struct {
-	ID                   string        `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
-	PlaceID              string        `protobuf:"bytes,2,opt,name=PlaceID,proto3" json:"PlaceID,omitempty"`
-	Name                 string        `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
-	Address              *PlaceAddress `protobuf:"bytes,4,opt,name=Address,proto3" json:"Address,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	ID      string        `protobuf:"bytes,1,opt,name=ID,proto3" json:"ID,omitempty"`
+	PlaceID string        `protobuf:"bytes,2,opt,name=PlaceID,proto3" json:"PlaceID,omitempty"`
+	Name    string        `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
+	Open    bool          `protobuf:"varint,4,opt,name=Open,proto3" json:"Open,omitempty"`
+	Address *PlaceAddress `protobuf:"bytes,5,opt,name=Address,proto3" json:"Address,omitempty"`
+	Wifi    *PlaceWifi    `protobuf:"bytes,6,opt,name=Wifi,proto3" json:"Wifi,omitempty"`
+	// Optional Details
+	FormattedAddress     string               `protobuf:"bytes,7,opt,name=FormattedAddress,proto3" json:"FormattedAddress,omitempty"`
+	Website              string               `protobuf:"bytes,8,opt,name=Website,proto3" json:"Website,omitempty"`
+	OpeningHours         []*PlaceOpeningHours `protobuf:"bytes,9,rep,name=OpeningHours,proto3" json:"OpeningHours,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
 }
 
 func (m *PlacePb) Reset()         { *m = PlacePb{} }
 func (m *PlacePb) String() string { return proto.CompactTextString(m) }
 func (*PlacePb) ProtoMessage()    {}
 func (*PlacePb) Descriptor() ([]byte, []int) {
-	return fileDescriptor_places_b8a0619dd5ec041e, []int{1}
+	return fileDescriptor_places_3ef661cf870547ee, []int{1}
 }
 func (m *PlacePb) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlacePb.Unmarshal(m, b)
@@ -111,9 +117,44 @@ func (m *PlacePb) GetName() string {
 	return ""
 }
 
+func (m *PlacePb) GetOpen() bool {
+	if m != nil {
+		return m.Open
+	}
+	return false
+}
+
 func (m *PlacePb) GetAddress() *PlaceAddress {
 	if m != nil {
 		return m.Address
+	}
+	return nil
+}
+
+func (m *PlacePb) GetWifi() *PlaceWifi {
+	if m != nil {
+		return m.Wifi
+	}
+	return nil
+}
+
+func (m *PlacePb) GetFormattedAddress() string {
+	if m != nil {
+		return m.FormattedAddress
+	}
+	return ""
+}
+
+func (m *PlacePb) GetWebsite() string {
+	if m != nil {
+		return m.Website
+	}
+	return ""
+}
+
+func (m *PlacePb) GetOpeningHours() []*PlaceOpeningHours {
+	if m != nil {
+		return m.OpeningHours
 	}
 	return nil
 }
@@ -131,7 +172,7 @@ func (m *PlaceAddress) Reset()         { *m = PlaceAddress{} }
 func (m *PlaceAddress) String() string { return proto.CompactTextString(m) }
 func (*PlaceAddress) ProtoMessage()    {}
 func (*PlaceAddress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_places_b8a0619dd5ec041e, []int{2}
+	return fileDescriptor_places_3ef661cf870547ee, []int{2}
 }
 func (m *PlaceAddress) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PlaceAddress.Unmarshal(m, b)
@@ -172,27 +213,188 @@ func (m *PlaceAddress) GetLocationType() string {
 	return ""
 }
 
+type PlaceWifi struct {
+	Rating               uint32   `protobuf:"varint,1,opt,name=Rating,proto3" json:"Rating,omitempty"`
+	AvgUp                uint32   `protobuf:"varint,2,opt,name=AvgUp,proto3" json:"AvgUp,omitempty"`
+	AvgDown              uint32   `protobuf:"varint,3,opt,name=AvgDown,proto3" json:"AvgDown,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PlaceWifi) Reset()         { *m = PlaceWifi{} }
+func (m *PlaceWifi) String() string { return proto.CompactTextString(m) }
+func (*PlaceWifi) ProtoMessage()    {}
+func (*PlaceWifi) Descriptor() ([]byte, []int) {
+	return fileDescriptor_places_3ef661cf870547ee, []int{3}
+}
+func (m *PlaceWifi) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PlaceWifi.Unmarshal(m, b)
+}
+func (m *PlaceWifi) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PlaceWifi.Marshal(b, m, deterministic)
+}
+func (dst *PlaceWifi) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PlaceWifi.Merge(dst, src)
+}
+func (m *PlaceWifi) XXX_Size() int {
+	return xxx_messageInfo_PlaceWifi.Size(m)
+}
+func (m *PlaceWifi) XXX_DiscardUnknown() {
+	xxx_messageInfo_PlaceWifi.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PlaceWifi proto.InternalMessageInfo
+
+func (m *PlaceWifi) GetRating() uint32 {
+	if m != nil {
+		return m.Rating
+	}
+	return 0
+}
+
+func (m *PlaceWifi) GetAvgUp() uint32 {
+	if m != nil {
+		return m.AvgUp
+	}
+	return 0
+}
+
+func (m *PlaceWifi) GetAvgDown() uint32 {
+	if m != nil {
+		return m.AvgDown
+	}
+	return 0
+}
+
+type PlaceOpeningHours struct {
+	OpenNow              bool                       `protobuf:"varint,1,opt,name=OpenNow,proto3" json:"OpenNow,omitempty"`
+	Period               []*PlaceOpeningHoursPeriod `protobuf:"bytes,2,rep,name=Period,proto3" json:"Period,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                   `json:"-"`
+	XXX_unrecognized     []byte                     `json:"-"`
+	XXX_sizecache        int32                      `json:"-"`
+}
+
+func (m *PlaceOpeningHours) Reset()         { *m = PlaceOpeningHours{} }
+func (m *PlaceOpeningHours) String() string { return proto.CompactTextString(m) }
+func (*PlaceOpeningHours) ProtoMessage()    {}
+func (*PlaceOpeningHours) Descriptor() ([]byte, []int) {
+	return fileDescriptor_places_3ef661cf870547ee, []int{4}
+}
+func (m *PlaceOpeningHours) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PlaceOpeningHours.Unmarshal(m, b)
+}
+func (m *PlaceOpeningHours) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PlaceOpeningHours.Marshal(b, m, deterministic)
+}
+func (dst *PlaceOpeningHours) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PlaceOpeningHours.Merge(dst, src)
+}
+func (m *PlaceOpeningHours) XXX_Size() int {
+	return xxx_messageInfo_PlaceOpeningHours.Size(m)
+}
+func (m *PlaceOpeningHours) XXX_DiscardUnknown() {
+	xxx_messageInfo_PlaceOpeningHours.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PlaceOpeningHours proto.InternalMessageInfo
+
+func (m *PlaceOpeningHours) GetOpenNow() bool {
+	if m != nil {
+		return m.OpenNow
+	}
+	return false
+}
+
+func (m *PlaceOpeningHours) GetPeriod() []*PlaceOpeningHoursPeriod {
+	if m != nil {
+		return m.Period
+	}
+	return nil
+}
+
+type PlaceOpeningHoursPeriod struct {
+	Day                  string   `protobuf:"bytes,1,opt,name=Day,proto3" json:"Day,omitempty"`
+	Time                 string   `protobuf:"bytes,2,opt,name=Time,proto3" json:"Time,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *PlaceOpeningHoursPeriod) Reset()         { *m = PlaceOpeningHoursPeriod{} }
+func (m *PlaceOpeningHoursPeriod) String() string { return proto.CompactTextString(m) }
+func (*PlaceOpeningHoursPeriod) ProtoMessage()    {}
+func (*PlaceOpeningHoursPeriod) Descriptor() ([]byte, []int) {
+	return fileDescriptor_places_3ef661cf870547ee, []int{5}
+}
+func (m *PlaceOpeningHoursPeriod) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_PlaceOpeningHoursPeriod.Unmarshal(m, b)
+}
+func (m *PlaceOpeningHoursPeriod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_PlaceOpeningHoursPeriod.Marshal(b, m, deterministic)
+}
+func (dst *PlaceOpeningHoursPeriod) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PlaceOpeningHoursPeriod.Merge(dst, src)
+}
+func (m *PlaceOpeningHoursPeriod) XXX_Size() int {
+	return xxx_messageInfo_PlaceOpeningHoursPeriod.Size(m)
+}
+func (m *PlaceOpeningHoursPeriod) XXX_DiscardUnknown() {
+	xxx_messageInfo_PlaceOpeningHoursPeriod.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_PlaceOpeningHoursPeriod proto.InternalMessageInfo
+
+func (m *PlaceOpeningHoursPeriod) GetDay() string {
+	if m != nil {
+		return m.Day
+	}
+	return ""
+}
+
+func (m *PlaceOpeningHoursPeriod) GetTime() string {
+	if m != nil {
+		return m.Time
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*PlacesPb)(nil), "pb.PlacesPb")
 	proto.RegisterType((*PlacePb)(nil), "pb.PlacePb")
 	proto.RegisterType((*PlaceAddress)(nil), "pb.PlaceAddress")
+	proto.RegisterType((*PlaceWifi)(nil), "pb.PlaceWifi")
+	proto.RegisterType((*PlaceOpeningHours)(nil), "pb.PlaceOpeningHours")
+	proto.RegisterType((*PlaceOpeningHoursPeriod)(nil), "pb.PlaceOpeningHoursPeriod")
 }
 
-func init() { proto.RegisterFile("places.proto", fileDescriptor_places_b8a0619dd5ec041e) }
+func init() { proto.RegisterFile("places.proto", fileDescriptor_places_3ef661cf870547ee) }
 
-var fileDescriptor_places_b8a0619dd5ec041e = []byte{
-	// 199 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0xd0, 0x31, 0x6b, 0x85, 0x30,
-	0x14, 0x05, 0x60, 0x12, 0x45, 0xdb, 0xab, 0x14, 0xb9, 0x53, 0x46, 0x49, 0x17, 0xe9, 0x60, 0xc1,
-	0xfe, 0x82, 0x82, 0x8b, 0x20, 0x45, 0x42, 0xe9, 0x9e, 0xa8, 0x48, 0xa1, 0x35, 0xc1, 0xb8, 0xf4,
-	0xdf, 0x17, 0xef, 0x8b, 0x8f, 0xf7, 0xb6, 0x93, 0xef, 0x04, 0x0e, 0x5c, 0xc8, 0xdd, 0x8f, 0x1e,
-	0x67, 0x5f, 0xbb, 0xcd, 0xee, 0x16, 0xb9, 0x33, 0xf2, 0x15, 0x1e, 0x06, 0xb2, 0xc1, 0xe0, 0x33,
-	0x24, 0x97, 0x2c, 0x58, 0x19, 0x55, 0x59, 0x93, 0xd5, 0xce, 0xd4, 0x24, 0x83, 0x51, 0xa1, 0x92,
-	0x1e, 0xd2, 0x40, 0xf8, 0x04, 0xbc, 0x6b, 0x05, 0x2b, 0x59, 0xf5, 0xa8, 0x78, 0xd7, 0xa2, 0x08,
-	0x55, 0xd7, 0x0a, 0x4e, 0x78, 0x3e, 0x11, 0x21, 0xfe, 0xd0, 0xbf, 0xb3, 0x88, 0x88, 0x29, 0xe3,
-	0x0b, 0xa4, 0xef, 0xd3, 0xb4, 0xcd, 0xde, 0x8b, 0xb8, 0x64, 0x55, 0xd6, 0x14, 0xd7, 0xb9, 0xe0,
-	0xea, 0xfc, 0x20, 0xbf, 0x20, 0xbf, 0x2d, 0xb0, 0x80, 0xa8, 0xd7, 0x3b, 0x4d, 0x33, 0x75, 0x44,
-	0x92, 0x75, 0xa1, 0xdd, 0x43, 0xd6, 0x05, 0x25, 0xe4, 0xbd, 0x1d, 0xf5, 0xfe, 0x6d, 0xd7, 0xcf,
-	0x3f, 0x77, 0x6e, 0xdf, 0x99, 0x49, 0xe8, 0x10, 0x6f, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff, 0x7d,
-	0xdb, 0x1f, 0xdb, 0x18, 0x01, 0x00, 0x00,
+var fileDescriptor_places_3ef661cf870547ee = []byte{
+	// 391 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0x4f, 0x8b, 0xe2, 0x40,
+	0x10, 0xc5, 0x49, 0xd4, 0x18, 0xcb, 0x64, 0x71, 0x9b, 0xfd, 0xd3, 0xb0, 0x97, 0x6c, 0xf6, 0x12,
+	0x3c, 0xb8, 0xa0, 0xa7, 0x3d, 0x2d, 0x42, 0x58, 0x56, 0x10, 0x27, 0xf4, 0x38, 0xe3, 0x39, 0x31,
+	0x3d, 0xa1, 0x61, 0x4c, 0x87, 0x24, 0xa3, 0xf8, 0x99, 0xe6, 0x4b, 0x0e, 0x5d, 0xe9, 0x04, 0xc5,
+	0x99, 0x5b, 0xbd, 0x5f, 0x3d, 0xaa, 0xab, 0x1f, 0x05, 0x4e, 0xf1, 0x1c, 0xef, 0x79, 0x35, 0x2b,
+	0x4a, 0x59, 0x4b, 0x62, 0x16, 0x89, 0xff, 0x1b, 0xec, 0x08, 0x59, 0x94, 0x90, 0x5f, 0x60, 0x35,
+	0x35, 0x35, 0xbc, 0x5e, 0x30, 0x9e, 0x8f, 0x67, 0x45, 0x32, 0x43, 0x12, 0x25, 0x4c, 0xb7, 0xfc,
+	0x57, 0x13, 0x86, 0x9a, 0x91, 0x4f, 0x60, 0xae, 0x42, 0x6a, 0x78, 0x46, 0x30, 0x62, 0xe6, 0x2a,
+	0x24, 0x54, 0xb7, 0x56, 0x21, 0x35, 0x11, 0xb6, 0x92, 0x10, 0xe8, 0x6f, 0xe2, 0x03, 0xa7, 0x3d,
+	0xc4, 0x58, 0x2b, 0x76, 0x57, 0xf0, 0x9c, 0xf6, 0x3d, 0x23, 0xb0, 0x19, 0xd6, 0x64, 0x0a, 0xc3,
+	0x65, 0x9a, 0x96, 0xbc, 0xaa, 0xe8, 0xc0, 0x33, 0x82, 0xf1, 0x7c, 0xd2, 0xed, 0xa0, 0x39, 0x6b,
+	0x0d, 0xe4, 0x27, 0xf4, 0x77, 0xe2, 0x49, 0x50, 0x0b, 0x8d, 0x6e, 0x67, 0x54, 0x90, 0x61, 0x8b,
+	0x4c, 0x61, 0xf2, 0x4f, 0x96, 0x87, 0xb8, 0xae, 0x79, 0xda, 0xce, 0x1d, 0xe2, 0x0a, 0x37, 0x5c,
+	0x2d, 0xbf, 0xe3, 0x49, 0x25, 0x6a, 0x4e, 0xed, 0x66, 0x79, 0x2d, 0xc9, 0x1f, 0x70, 0xd4, 0x72,
+	0x22, 0xcf, 0xfe, 0xcb, 0x97, 0xb2, 0xa2, 0x23, 0x4c, 0xe7, 0x6b, 0xf7, 0xe0, 0x65, 0x93, 0x5d,
+	0x59, 0xfd, 0x47, 0x70, 0x2e, 0x97, 0x27, 0x13, 0xe8, 0xad, 0xe3, 0x1a, 0x23, 0x33, 0x98, 0x2a,
+	0x91, 0xe4, 0x19, 0xe6, 0xa5, 0x48, 0x9e, 0x11, 0x1f, 0x9c, 0xb5, 0xdc, 0xc7, 0xb5, 0x90, 0xf9,
+	0xf6, 0x5c, 0xb4, 0x99, 0x5d, 0x31, 0xff, 0x1e, 0x46, 0xdd, 0x5f, 0xc9, 0x37, 0xb0, 0x58, 0x5c,
+	0x8b, 0x3c, 0xc3, 0xb9, 0x2e, 0xd3, 0x8a, 0x7c, 0x81, 0xc1, 0xf2, 0x98, 0x3d, 0x14, 0x38, 0xdc,
+	0x65, 0x8d, 0x50, 0xff, 0x5c, 0x1e, 0xb3, 0x50, 0x9e, 0x72, 0x9c, 0xec, 0xb2, 0x56, 0xfa, 0x09,
+	0x7c, 0xbe, 0xf9, 0x8f, 0xb2, 0x2b, 0xbd, 0x91, 0x27, 0x9c, 0x6e, 0xb3, 0x56, 0x92, 0x05, 0x58,
+	0x11, 0x2f, 0x85, 0x4c, 0xa9, 0x89, 0x81, 0xfc, 0x78, 0x37, 0x90, 0xc6, 0xc2, 0xb4, 0xd5, 0xff,
+	0x0b, 0xdf, 0x3f, 0xb0, 0xa8, 0x24, 0xc2, 0xf8, 0xac, 0xcf, 0x49, 0x95, 0xea, 0x42, 0xb6, 0xe2,
+	0xc0, 0xf5, 0x31, 0x61, 0x9d, 0x58, 0x78, 0xbb, 0x8b, 0xb7, 0x00, 0x00, 0x00, 0xff, 0xff, 0x89,
+	0xe9, 0x70, 0x8d, 0xcb, 0x02, 0x00, 0x00,
 }

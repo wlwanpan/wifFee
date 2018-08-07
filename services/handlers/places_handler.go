@@ -1,36 +1,43 @@
 package handlers
 
 import (
-	"context"
-	"errors"
+	"log"
 	"net/http"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
 	"github.com/wlwanpan/wifFee/services/gmap"
+	"github.com/wlwanpan/wifFee/services/models"
 	"github.com/wlwanpan/wifFee/services/pb"
 	"googlemaps.github.io/maps"
+	mgo "gopkg.in/mgo.v2"
 )
 
 func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
+	db := r.Context().Value("db").(*mgo.Session)
 	params := mux.Vars(r)
-	client := gmap.MapClient()
 
-	parsedLocation := gmap.ParseLocation(params["latlng"])
-	searchReq := &maps.TextSearchRequest{
-		Query:    "cafe",
-		Radius:   1,
-		Location: parsedLocation,
-	}
-
-	resp, err := client.TextSearch(context.Background(), searchReq)
+	resp, err := gmap.TextSearch(params["latlng"], 10)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 
 	places := []*pb.PlacePb{}
-	for _, place := range resp.Results {
-		places = append(places, mapsPlaceToPb(place))
+	for _, mapsPlace := range resp.Results {
+		aLog := models.ActionLog{
+			RecordID:   mapsPlace.PlaceID,
+			Collection: "places",
+			Action:     "load",
+		}
+		aLog.Create(db)
+
+		place := models.Place{PlaceID: mapsPlace.PlaceID}
+		err := place.Load(db)
+		if err != nil {
+			log.Println(err.Error())
+		}
+
+		places = append(places, PlaceToPb(place, mapsPlace))
 	}
 
 	placesPb := &pb.PlacesPb{
@@ -48,18 +55,72 @@ func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 }
 
 func GetCoffeeShop(w http.ResponseWriter, r *http.Request) (int, error) {
-	return http.StatusNoContent, errors.New("Not implemented yet...")
+	db := r.Context().Value("db").(*mgo.Session)
+	placeID := mux.Vars(r)["id"]
+
+	errChan := make(chan error)
+	done := make(chan bool)
+
+	var mapsPlace maps.PlaceDetailsResult
+	var place models.Place
+
+	go func() {
+		p := models.Place{PlaceID: placeID}
+		err := p.LoadOrCreate(db)
+		if err != nil {
+			errChan <- err
+		}
+		place = p
+		done <- true
+	}()
+
+	go func() {
+		resp, err := gmap.PlaceDetails(placeID)
+		if err != nil {
+			errChan <- err
+		}
+		mapsPlace = resp
+		done <- true
+	}()
+
+	for i := 0; i < 2; i++ {
+		select {
+		case err := <-errChan:
+			return http.StatusInternalServerError, err
+		default:
+			<-done
+		}
+	}
+
+	encodedPlacePb, err := proto.Marshal(PlaceDetailsToPb(place, mapsPlace))
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(encodedPlacePb)
+
+	return http.StatusOK, nil
 }
 
-func mapsPlaceToPb(p maps.PlacesSearchResult) *pb.PlacePb {
+func PlaceDetailsToPb(place models.Place, mapsPlaceDetail maps.PlaceDetailsResult) *pb.PlacePb {
 	return &pb.PlacePb{
-		ID:      p.ID,
-		PlaceID: p.PlaceID,
-		Name:    p.Name,
+		PlaceID: place.PlaceID,
+	}
+}
+
+func PlaceToPb(place models.Place, mapsPlace maps.PlacesSearchResult) *pb.PlacePb {
+	return &pb.PlacePb{
+		PlaceID: place.PlaceID,
+		Name:    mapsPlace.Name,
+		Wifi: &pb.PlaceWifi{
+			AvgUp:   place.AvgUp,
+			AvgDown: place.AvgDown,
+		},
 		Address: &pb.PlaceAddress{
-			Lat:          p.Geometry.Location.Lat,
-			Lng:          p.Geometry.Location.Lng,
-			LocationType: p.Geometry.LocationType,
+			Lat:          mapsPlace.Geometry.Location.Lat,
+			Lng:          mapsPlace.Geometry.Location.Lng,
+			LocationType: mapsPlace.Geometry.LocationType,
 		},
 	}
 }

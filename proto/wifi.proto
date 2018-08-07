@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package pb;
+
+message Wifi{
+  string ID = 1;
+  string PlaceID = 2;
+  uint64 DownSpeed = 3;
+  uint64 UpSpeed = 4;
+}
