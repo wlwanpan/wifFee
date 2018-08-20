@@ -1,12 +1,9 @@
 package middlewares
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"time"
-
-	mgo "gopkg.in/mgo.v2"
 )
 
 // Application handler returning status code and error
@@ -19,8 +16,6 @@ type MiddlewareFunc func(h http.HandlerFunc) http.HandlerFunc
 type Middleware struct {
 	// Store an arr of middleware func to call on each handler func.
 	chain []MiddlewareFunc
-	// Holds a mongoDB session for handlers using db instances.
-	db *mgo.Session
 }
 
 // Append middleware funcs to chain.
@@ -42,26 +37,6 @@ func (m *Middleware) Then(f AppHandler) http.HandlerFunc {
 		}
 
 		h(w, r)
-	}
-}
-
-// Stores a mongoDB session to middlware
-func (m *Middleware) SetDB(db *mgo.Session) {
-	m.db = db
-}
-
-// Make a copy of mongoDB stored in the middleware and store the Session
-// in the request context.
-func (m *Middleware) UseDB(h AppHandler) AppHandler {
-
-	return func(w http.ResponseWriter, r *http.Request) (int, error) {
-		dbSession := m.db.Copy()
-		defer dbSession.Close()
-
-		ctx := context.WithValue(r.Context(), "db", dbSession)
-		r = r.WithContext(ctx)
-
-		return h(w, r)
 	}
 }
 

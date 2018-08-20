@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -16,7 +15,7 @@ type Wifi struct {
 	DownSpeed uint64        `bson:downSpeed`
 }
 
-func (wif *Wifi) Create(db *mgo.Session) error {
+func (wif *Wifi) Create() error {
 
 	wif.CreatedAt = time.Now()
 

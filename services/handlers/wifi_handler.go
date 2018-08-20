@@ -5,12 +5,9 @@ import (
 	"strconv"
 
 	"github.com/wlwanpan/wifFee/services/models"
-	mgo "gopkg.in/mgo.v2"
 )
 
 func LogWifi(w http.ResponseWriter, r *http.Request) (int, error) {
-	db := r.Context().Value("db").(*mgo.Session)
-
 	err := r.ParseForm()
 	if err != nil {
 		return http.StatusBadRequest, err
@@ -23,7 +20,7 @@ func LogWifi(w http.ResponseWriter, r *http.Request) (int, error) {
 		DownSpeed: ToUint32(r.Form.Get("downSpeed")),
 	}
 
-	err = wif.Create(db)
+	err = wif.Create()
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}

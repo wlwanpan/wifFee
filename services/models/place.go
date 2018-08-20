@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -16,30 +15,33 @@ type Place struct {
 	AvgDown       uint32        `bson:"avgDown"`
 }
 
-func (p *Place) LoadOrCreate(db *mgo.Session) error {
-
-	err := p.Load(db)
+func (p *Place) LoadOrCreate() error {
+	err := p.Load()
 	if err != nil && err.Error() == "not found" {
-		return p.Create(db)
+		return p.Create()
 	}
 
 	return err
 }
 
-func (p *Place) Load(db *mgo.Session) error {
+func (p *Place) Load() error {
+	dbSession := db.Copy()
+	defer dbSession.Close()
 
-	collection := db.DB("wiffee").C("places")
+	collection := dbSession.DB("wiffee").C("places")
 	query := bson.M{"placeID": p.PlaceID}
 
 	return collection.Find(query).One(p)
 }
 
-func (p *Place) Create(db *mgo.Session) error {
+func (p *Place) Create() error {
+	dbSession := db.Copy()
+	defer dbSession.Close()
 
 	now := time.Now()
 	p.ID = bson.NewObjectId()
 	p.CreatedAt = now
 	p.LastUpdatedAt = now
 
-	return db.DB("wiffee").C("places").Insert(p)
+	return dbSession.DB("wiffee").C("places").Insert(p)
 }

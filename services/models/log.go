@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -16,7 +15,9 @@ type ActionLog struct {
 	CreatedAt  time.Time     `bson:"createdAt"`
 }
 
-func (l *ActionLog) Create(db *mgo.Session) error {
+func (l *ActionLog) Create() error {
+	dbSession := db.Copy()
+	defer dbSession.Close()
 
 	l.ID = bson.NewObjectId()
 	l.CreatedAt = time.Now()
@@ -26,7 +27,7 @@ func (l *ActionLog) Create(db *mgo.Session) error {
 	}
 
 	if l.RecordID != "" && l.Collection != "" {
-		return db.DB("wiffee").C("log").Insert(l)
+		return dbSession.DB("wiffee").C("log").Insert(l)
 	}
 
 	return errors.New("Missing attributes: RecordID or Collection")

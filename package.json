@@ -4,8 +4,7 @@
   "description": "wifi + coffee = <3",
   "scripts": {
     "protoc": "protoc --proto_path=proto --js_out=import_style=commonjs,binary:app/src/pb proto/places.proto proto/wifi.proto && protoc -I=proto --go_out=services/pb proto/places.proto proto/wifi.proto",
-    "start": "cd app && npm run dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cd app && npm run dev"
   },
   "repository": {
     "type": "git",

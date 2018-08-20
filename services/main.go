@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/wlwanpan/wifFee/services/models"
 	"github.com/wlwanpan/wifFee/services/routers"
-	mgo "gopkg.in/mgo.v2"
 )
 
 func main() {
@@ -18,14 +18,11 @@ func main() {
 		log.Fatal("Could not load environment variables, .env file")
 	}
 
-	db, err := mgo.Dial(os.Getenv("MONGO_DB_ADDRESS"))
-	if err != nil {
-		log.Fatal("Cannot connect to mongodb", err)
-	}
-	defer db.Close()
+	mgoAddr := os.Getenv("MONGO_DB_ADDRESS")
+	models.InitDb(mgoAddr)
 
 	port := ":" + os.Getenv("PORT")
-	router := routers.Init(db)
+	router := routers.AssembleRoutes()
 	server := &http.Server{
 		Addr:         port,
 		Handler:      routers.SetCORS(router),

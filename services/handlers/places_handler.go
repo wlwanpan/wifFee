@@ -10,11 +10,9 @@ import (
 	"github.com/wlwanpan/wifFee/services/models"
 	"github.com/wlwanpan/wifFee/services/pb"
 	"googlemaps.github.io/maps"
-	mgo "gopkg.in/mgo.v2"
 )
 
 func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
-	db := r.Context().Value("db").(*mgo.Session)
 	params := mux.Vars(r)
 
 	resp, err := gmap.TextSearch(params["latlng"], 10)
@@ -29,10 +27,10 @@ func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 			Collection: "places",
 			Action:     "load",
 		}
-		aLog.Create(db)
+		aLog.Create()
 
 		place := models.Place{PlaceID: mapsPlace.PlaceID}
-		err := place.Load(db)
+		err := place.Load()
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -55,7 +53,6 @@ func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 }
 
 func GetCoffeeShop(w http.ResponseWriter, r *http.Request) (int, error) {
-	db := r.Context().Value("db").(*mgo.Session)
 	placeID := mux.Vars(r)["id"]
 
 	errChan := make(chan error)
@@ -66,7 +63,7 @@ func GetCoffeeShop(w http.ResponseWriter, r *http.Request) (int, error) {
 
 	go func() {
 		p := models.Place{PlaceID: placeID}
-		err := p.LoadOrCreate(db)
+		err := p.LoadOrCreate()
 		if err != nil {
 			errChan <- err
 		}
