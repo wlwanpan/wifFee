@@ -12,39 +12,57 @@ export default {
     },
     mapType: 'roadmap',
     zoom: 15,
-    markers: [],
     places: {}
   },
   getters: {
     getCurrentCoords: (state) => state.currentCoords,
-    getMarkers: (state) => state.markers,
     getPlaces: (state) => state.places,
     getMapType: (state) => state.mapType,
-    getZoom: (state) => state.zoom
+    getZoom: (state) => state.zoom,
+    getMarkers: (state) => {
+      var markers = []
+      if (!gmapApi()) return markers
+
+      for (let key in state.places) {
+        let place = state.places[key]
+        markers.push({
+          placeId: key,
+          position: {
+            lat: place.address.lat,
+            lng: place.address.lng
+          },
+          icon: {
+            path: gmapApi().maps.SymbolPath.CIRCLE,
+            scale: 5
+          }
+        })
+      }
+      return markers
+    }
   },
   actions: {
-    setMapInstance({ commit }, gmapInstance) {
+    setMapInstance: ({ commit }, gmapInstance) => {
       /**
        * Store google Map obj and initialize/store google service obj
        * @param {google.maps.Map}
        */
       commit('setMapInstance', gmapInstance)
     },
-    async updateCoffeeShopMarkers({ commit, state }) {
+    updateCoffeeShopMarkers: async ({ commit, state }) => {
       /**
        * Call Services search query
        */
       let {lat, lng} = state.currentCoords
       let resp = await services().get('places/' + [lat, lng].join(','))
 
-      if (resp.status === 200) {
+      if (resp.status < 400) {
         commit('setPlaces', pbParser.placesToIndexedJson(resp.data))
       }
       else {
         console.log(resp)
       }
     },
-    updateCurrentCoords({ commit }) {
+    updateCurrentCoords: ({ commit }) => {
       /**
        * Locate current posn using window.navigator and returns a promise{true} if successful
        * @return {Promise(boolean)}
@@ -63,13 +81,13 @@ export default {
     }
   },
   mutations: {
-    setMapInstance(state, gmapInstance) {
+    setMapInstance: (state, gmapInstance) => {
       state.map = gmapInstance
     },
-    setPlaces(state, places) {
+    setPlaces: (state, places) => {
       state.places = places
     },
-    setCurrentCoords(state, coords) {
+    setCurrentCoords: (state, coords) => {
       state.currentCoords = {
         lat: coords.latitude,
         lng: coords.longitude
