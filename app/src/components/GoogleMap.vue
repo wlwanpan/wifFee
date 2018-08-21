@@ -1,5 +1,5 @@
 <template>
-  <div id='google-map'>
+  <div id='google-map' class='full-page'>
     <GmapMap
       ref='gMapRef'
       :center='center'
@@ -53,8 +53,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang='scss' scoped>
 #google-map {
-  height: 100%; width: 100%;
+  position: absolute;
 }
 </style>
