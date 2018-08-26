@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import * as _ from 'underscore'
 import { mapGetters } from 'vuex'
 import GoogleMarkers from './GoogleMarkers'
 
@@ -19,6 +20,7 @@ export default {
   name: 'google-map',
   computed: {
     ...mapGetters({
+      map: 'navigator/getMap',
       center: 'navigator/getCurrentCoords',
       places: 'navigator/getPlaces',
       mapType: 'navigator/getMapType',
@@ -29,10 +31,21 @@ export default {
     try {
       let map = await this.$refs.gMapRef.$mapPromise
       this.$store.dispatch('navigator/setMapInstance', map)
-      await this.$store.dispatch('navigator/updateCurrentCoords')
+      await this.$store.dispatch('navigator/updateCurrentLoc')
+      this.initListeners()
     }
     catch (err) {
       window.alert(err)
+    }
+  },
+  methods: {
+    initListeners() {
+      this.map.addListener('center_changed', _.debounce(() => {
+        this.$store.dispatch('navigator/updateCurrentCoords', {
+          latitude: this.map.getCenter().lat(),
+          longitude: this.map.getCenter().lng()
+        })
+      }, 500))
     }
   },
   components: {

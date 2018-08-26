@@ -15,10 +15,11 @@ export default {
     places: {}
   },
   getters: {
+    getMap: (state) => state.map,
     getCurrentCoords: (state) => state.currentCoords,
-    getPlaces: (state) => state.places,
     getMapType: (state) => state.mapType,
     getZoom: (state) => state.zoom,
+    getPlaces: (state) => state.places,
     getMarkers: (state) => {
       var markers = []
       if (!gmapApi()) return markers
@@ -62,7 +63,7 @@ export default {
         console.log(resp)
       }
     },
-    updateCurrentCoords: ({ commit }) => {
+    updateCurrentLoc: ({ commit }) => {
       /**
        * Locate current posn using window.navigator and returns a promise{true} if successful
        * @return {Promise(boolean)}
@@ -78,6 +79,9 @@ export default {
           }
         })
       })
+    },
+    updateCurrentCoords: ({ commit }, coords) => {
+      commit('setCurrentCoords', coords)
     }
   },
   mutations: {
