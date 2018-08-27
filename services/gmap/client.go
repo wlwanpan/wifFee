@@ -37,17 +37,36 @@ func MapClient() *maps.Client {
 }
 
 // Wrapper to maps.TextSearch <- Need to update params to config struct to support more options.
-func TextSearch(latlng string, radius uint) (maps.PlacesSearchResponse, error) {
-
-	l := ParseLocation(latlng)
-	ctx := context.Background()
-	r := &maps.TextSearchRequest{
+func TextSearch(latlng string, radius uint) ([]maps.PlacesSearchResult, error) {
+	loc := ParseLocation(latlng)
+	req := &maps.TextSearchRequest{
 		Query:    "cafe",
 		Radius:   radius,
-		Location: l,
+		Location: loc,
+	}
+	p, err := paginatedTextSearch(req, []maps.PlacesSearchResult{})
+	if err != nil {
+		return p, err
 	}
 
-	return MapClient().TextSearch(ctx, r)
+	return p, nil
+}
+
+func paginatedTextSearch(req *maps.TextSearchRequest, p []maps.PlacesSearchResult) ([]maps.PlacesSearchResult, error) {
+	ctx := context.Background()
+	resp, err := MapClient().TextSearch(ctx, req)
+	if err != nil {
+		return p, err
+	}
+	p = append(p, resp.Results...)
+	log.Println(resp.NextPageToken)
+	if resp.NextPageToken == "" {
+		return p, nil
+	}
+	newReq := &maps.TextSearchRequest{
+		PageToken: resp.NextPageToken,
+	}
+	return paginatedTextSearch(newReq, p)
 }
 
 // Wrapper to maps.PlaceDetails, takes in PlaceID
@@ -56,8 +75,8 @@ func PlaceDetails(id string) (maps.PlaceDetailsResult, error) {
 	if id == "" {
 		return maps.PlaceDetailsResult{}, errors.New("Invalid place ID")
 	}
-	r := &maps.PlaceDetailsRequest{PlaceID: id}
+	req := &maps.PlaceDetailsRequest{PlaceID: id}
 	ctx := context.Background()
 
-	return MapClient().PlaceDetails(ctx, r)
+	return MapClient().PlaceDetails(ctx, req)
 }

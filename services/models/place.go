@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -17,7 +18,7 @@ type Place struct {
 
 func (p *Place) LoadOrCreate() error {
 	err := p.Load()
-	if err != nil && err.Error() == "not found" {
+	if err != nil && err == mgo.ErrNotFound {
 		return p.Create()
 	}
 

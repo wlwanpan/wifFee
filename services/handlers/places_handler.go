@@ -15,13 +15,13 @@ import (
 func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 	params := mux.Vars(r)
 
-	resp, err := gmap.TextSearch(params["latlng"], 10)
+	results, err := gmap.TextSearch(params["latlng"], 10)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
 
 	places := []*pb.PlacePb{}
-	for _, mapsPlace := range resp.Results {
+	for _, mapsPlace := range results {
 		aLog := models.ActionLog{
 			RecordID:   mapsPlace.PlaceID,
 			Collection: "places",
