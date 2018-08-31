@@ -29,19 +29,19 @@ func LogWifi(w http.ResponseWriter, r *http.Request) (int, error) {
 }
 
 func ToUint64(s string) uint64 {
-
 	parsedUint, err := strconv.ParseUint(s, 10, 64)
 	if err != nil {
 		return 0
 	}
+
 	return parsedUint
 }
 
 func ToUint32(s string) uint64 {
-
 	parsedUint, err := strconv.ParseUint(s, 10, 32)
 	if err != nil {
 		return 0
 	}
+
 	return parsedUint
 }

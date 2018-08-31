@@ -27,7 +27,7 @@ func (l *ActionLog) Create() error {
 	}
 
 	if l.RecordID != "" && l.Collection != "" {
-		return dbSession.DB("wiffee").C("log").Insert(l)
+		return dbSession.DB("").C("log").Insert(l)
 	}
 
 	return errors.New("Missing attributes: RecordID or Collection")

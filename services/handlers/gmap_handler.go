@@ -1,4 +1,4 @@
-package gmap
+package handlers
 
 import (
 	"context"
@@ -22,6 +22,7 @@ func ParseLocation(location string) *maps.LatLng {
 	if err != nil {
 		log.Println("Could not parse latitude,longitude")
 	}
+
 	return &l
 }
 
@@ -66,6 +67,7 @@ func paginatedTextSearch(req *maps.TextSearchRequest, p []maps.PlacesSearchResul
 	newReq := &maps.TextSearchRequest{
 		PageToken: resp.NextPageToken,
 	}
+
 	return paginatedTextSearch(newReq, p)
 }
 

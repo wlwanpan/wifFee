@@ -13,7 +13,11 @@ var (
 func InitDb(mgoAddr string) {
 	// To add secure password
 	var err error
-	db, err = mgo.Dial(mgoAddr)
+	info := &mgo.DialInfo{
+		Addrs:    []string{mgoAddr},
+		Database: "wiffee",
+	}
+	db, err = mgo.DialWithInfo(info)
 	if err != nil {
 		log.Fatal("Cannot connect to mongodb", err)
 	}

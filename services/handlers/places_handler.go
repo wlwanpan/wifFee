@@ -6,7 +6,6 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/gorilla/mux"
-	"github.com/wlwanpan/wifFee/services/gmap"
 	"github.com/wlwanpan/wifFee/services/models"
 	"github.com/wlwanpan/wifFee/services/pb"
 	"googlemaps.github.io/maps"
@@ -15,7 +14,7 @@ import (
 func GetCoffeeShops(w http.ResponseWriter, r *http.Request) (int, error) {
 	params := mux.Vars(r)
 
-	results, err := gmap.TextSearch(params["latlng"], 10)
+	results, err := TextSearch(params["latlng"], 10)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
@@ -72,7 +71,7 @@ func GetCoffeeShop(w http.ResponseWriter, r *http.Request) (int, error) {
 	}()
 
 	go func() {
-		resp, err := gmap.PlaceDetails(placeID)
+		resp, err := PlaceDetails(placeID)
 		if err != nil {
 			errChan <- err
 		}

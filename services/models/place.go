@@ -29,7 +29,7 @@ func (p *Place) Load() error {
 	dbSession := db.Copy()
 	defer dbSession.Close()
 
-	collection := dbSession.DB("wiffee").C("places")
+	collection := dbSession.DB("").C("places")
 	query := bson.M{"placeID": p.PlaceID}
 
 	return collection.Find(query).One(p)
@@ -44,5 +44,5 @@ func (p *Place) Create() error {
 	p.CreatedAt = now
 	p.LastUpdatedAt = now
 
-	return dbSession.DB("wiffee").C("places").Insert(p)
+	return dbSession.DB("").C("places").Insert(p)
 }

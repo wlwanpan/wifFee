@@ -19,6 +19,6 @@ func (wif *Wifi) Create() error {
 
 	wif.CreatedAt = time.Now()
 
-	collection := db.DB("wiffee").C("wifi")
+	collection := db.DB("").C("wifi")
 	return collection.Insert(wif)
 }
