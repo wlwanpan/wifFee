@@ -16,7 +16,6 @@ type Wifi struct {
 }
 
 func (wif *Wifi) Create() error {
-
 	wif.CreatedAt = time.Now()
 
 	collection := db.DB("").C("wifi")

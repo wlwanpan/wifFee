@@ -18,8 +18,7 @@ func main() {
 		log.Fatal("Could not load environment variables, .env file")
 	}
 
-	mgoAddr := os.Getenv("MONGO_DB_ADDRESS")
-	models.InitDb(mgoAddr)
+	models.InitDb()
 
 	port := ":" + os.Getenv("PORT")
 	router := routers.AssembleRoutes()
