@@ -1,15 +1,13 @@
-<template>
-  <div id='google-markers'>
-    <GmapMarker
-      v-for="(m, index) in markers"
-      :key="index"
-      :position="m.position"
-      :icon="m.icon"
-      :clickable="true"
-      :draggable="false"
-      @mouseover="onHover(m.placeId)"
-    />
-  </div>
+<template lang="pug">
+  div#google-markers
+    GmapMarker(
+      v-for="(m, index) in markers",
+      :key="index",
+      :position="m.position",
+      :icon="m.icon",
+      :clickable="true",
+      :draggable="false",
+      @mouseover="onHover(m.placeId)")
 </template>
 
 <script>
@@ -32,8 +30,8 @@ export default {
     onHover(placeId) {
       console.log(placeId)
     },
-    async updateMarkers() {
-      await this.$store.dispatch('navigator/updateCoffeeShopMarkers')
+    updateMarkers() {
+      this.$store.dispatch('navigator/updateCoffeeShopMarkers')
     }
   }
 }

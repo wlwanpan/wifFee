@@ -1,18 +1,25 @@
-<template>
-  <div id='map-drawer'
-    v-bind:class="[revealDrawer ? 'reveal-drawer': '']"
-    @click='revealDrawer = !revealDrawer'>
-
-  </div>
+<template lang="pug">
+  div#map-drawer(
+    v-bind:class="[revealDrawer ? 'reveal-drawer': '']",
+    @click="revealDrawer = !revealDrawer")
+    upload-wifi
+    search-place
 </template>
 
 <script>
+import UploadWifi from './MapDrawer/UploadWifi'
+import SearchPlace from './MapDrawer/SearchPlace'
+
 export default {
   name: 'map-drawer',
   data() {
     return {
       revealDrawer: false
     }
+  },
+  components: {
+    UploadWifi,
+    SearchPlace
   }
 }
 </script>

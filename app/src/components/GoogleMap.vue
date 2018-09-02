@@ -1,14 +1,12 @@
-<template>
-  <div id='google-map' class='full-page'>
-    <GmapMap
-      ref='gMapRef'
-      :center='center'
-      :zoom='zoom'
-      :map-type-id='mapType'
-      style="width: 100%; height: 100%;">
-      <google-markers />
-    </GmapMap>
-  </div>
+<template lang="pug">
+  div#google-map.full-page
+    GmapMap(
+      ref='gMapRef',
+      :center='center',
+      :zoom='zoom',
+      :map-type-id='mapType',
+      style="width: 100%; height: 100%;")
+      google-markers
 </template>
 
 <script>
@@ -40,12 +38,14 @@ export default {
   },
   methods: {
     initListeners() {
-      this.map.addListener('center_changed', _.debounce(() => {
+      let debouncedCb = _.debounce(() => {
         this.$store.dispatch('navigator/updateCurrentCoords', {
           latitude: this.map.getCenter().lat(),
           longitude: this.map.getCenter().lng()
         })
-      }, 500))
+      }, 250)
+
+      this.map.addListener('center_changed', debouncedCb)
     }
   },
   components: {

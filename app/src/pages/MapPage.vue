@@ -1,8 +1,7 @@
-<template>
-  <div id='map-page' class='full-page'>
-    <google-map />
-    <map-drawer />
-  </div>
+<template lang="pug">
+  div#map-page.full-page
+    google-map
+    map-drawer
 </template>
 
 <script>

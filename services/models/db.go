@@ -3,6 +3,7 @@ package models
 import (
 	"log"
 	"os"
+	"time"
 
 	mgo "gopkg.in/mgo.v2"
 )
@@ -20,6 +21,7 @@ func InitDb() {
 	info := &mgo.DialInfo{
 		Addrs:    []string{mgoAddr},
 		Database: dbName,
+		Timeout:  5 * time.Second,
 	}
 
 	db, err = mgo.DialWithInfo(info)
