@@ -18,7 +18,7 @@ export default {
   computed: {
     ...mapGetters({
       center: 'navigator/getCurrentCoords',
-      markers: 'navigator/getMarkers'
+      markers: 'marker/getMarkers'
     })
   },
   watch: {
@@ -27,11 +27,12 @@ export default {
     }
   },
   methods: {
-    onHover(placeId) {
+    async onHover(placeId) {
       console.log(placeId)
+      let markerDetails = await this.$store.dispatch('marker/loadDetails', placeId)
     },
     updateMarkers() {
-      this.$store.dispatch('navigator/updateCoffeeShopMarkers')
+      this.$store.dispatch('marker/updateMarkers', this.center)
     }
   }
 }

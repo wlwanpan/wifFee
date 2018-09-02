@@ -20,7 +20,6 @@ export default {
     ...mapGetters({
       map: 'navigator/getMap',
       center: 'navigator/getCurrentCoords',
-      places: 'navigator/getPlaces',
       mapType: 'navigator/getMapType',
       zoom: 'navigator/getZoom'
     })

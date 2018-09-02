@@ -1,4 +1,4 @@
-import { PlacesPb } from './places_pb'
+import { PlacesPb, PlacePb } from './places_pb'
 
 export default {
 
@@ -25,8 +25,11 @@ export default {
       indexedPlaces[_placeId] = place
     }
 
-    console.log(indexedPlaces)
     return indexedPlaces
+  },
+  placeDetails(bytes) {
+    let placePb = PlacePb.deserializeBinary(bytes)
+    return placePb.toObject()
   }
 
 }

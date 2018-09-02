@@ -1,7 +1,3 @@
-import { gmapApi } from 'vue2-google-maps'
-import pbParser from '../pb/parser'
-import services from '../services'
-
 export default {
   namespaced: true,
   state: {
@@ -11,35 +7,13 @@ export default {
       lng: -123.118336
     },
     mapType: 'roadmap',
-    zoom: 15,
-    places: {}
+    zoom: 15
   },
   getters: {
     getMap: (state) => state.map,
     getCurrentCoords: (state) => state.currentCoords,
     getMapType: (state) => state.mapType,
-    getZoom: (state) => state.zoom,
-    getPlaces: (state) => state.places,
-    getMarkers: (state) => {
-      var markers = []
-      if (!gmapApi()) return markers
-
-      for (let key in state.places) {
-        let place = state.places[key]
-        markers.push({
-          placeId: key,
-          position: {
-            lat: place.address.lat,
-            lng: place.address.lng
-          },
-          icon: {
-            path: gmapApi().maps.SymbolPath.CIRCLE,
-            scale: 5
-          }
-        })
-      }
-      return markers
-    }
+    getZoom: (state) => state.zoom
   },
   actions: {
     setMapInstance: ({ commit }, gmapInstance) => {
@@ -48,20 +22,6 @@ export default {
        * @param {google.maps.Map}
        */
       commit('setMapInstance', gmapInstance)
-    },
-    updateCoffeeShopMarkers: async ({ commit, state }) => {
-      /**
-       * Call Services search query
-       */
-      let {lat, lng} = state.currentCoords
-      let resp = await services().get('places/' + [lat, lng].join(','))
-
-      if (resp.status < 400) {
-        commit('setPlaces', pbParser.placesToIndexedJson(resp.data))
-      }
-      else {
-        console.log(resp)
-      }
     },
     updateCurrentLoc: ({ commit }) => {
       /**
@@ -87,9 +47,6 @@ export default {
   mutations: {
     setMapInstance: (state, gmapInstance) => {
       state.map = gmapInstance
-    },
-    setPlaces: (state, places) => {
-      state.places = places
     },
     setCurrentCoords: (state, coords) => {
       state.currentCoords = {
