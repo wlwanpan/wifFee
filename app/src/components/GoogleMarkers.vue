@@ -28,8 +28,8 @@ export default {
   },
   methods: {
     async onHover(placeId) {
-      console.log(placeId)
       let markerDetails = await this.$store.dispatch('marker/loadDetails', placeId)
+      console.log(markerDetails)
     },
     updateMarkers() {
       this.$store.dispatch('marker/updateMarkers', this.center)

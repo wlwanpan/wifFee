@@ -45,7 +45,7 @@ export default {
         return pbParser.placeDetails(resp.data)
       }
       else {
-        window.alert(resp)
+        window.alert(resp.data)
       }
     }
   },
