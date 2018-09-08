@@ -7,6 +7,8 @@
           v-if="!openDrawer")
           md-icon menu
         span.md-title WifFee
+        div.md-toolbar-section-end
+          drawer-right-actions
       md-app-drawer(
         :md-active.sync="openDrawer",
         md-persistent="full")
@@ -16,14 +18,15 @@
             md-button.md-icon-button.md-dense(
               @click="openDrawer = !openDrawer")
               md-icon keyboard_arrow_left
-        drawer-nav(
+        drawer-nav-list(
           @close-drawer="openDrawer = false")
       md-app-content
         router-view
 </template>
 
 <script>
-import DrawerNav from './components/DrawerNav'
+import DrawerNavList from './components/DrawerNavList'
+import DrawerRightActions from './components/DrawerRightActions'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -34,7 +37,8 @@ export default {
     }
   },
   components: {
-    DrawerNav
+    DrawerNavList,
+    DrawerRightActions
   }
 }
 </script>

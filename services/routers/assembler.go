@@ -21,6 +21,7 @@ func AssembleRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router = SetPlacesRoutes(router)
 	router = SetWifiRoutes(router)
+	router = SetSpeedtestRoutes(router)
 
 	return router
 }
